@@ -8,28 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.example.best.viaplayassignment.Commmon.Common;
-import com.example.best.viaplayassignment.MainActivity;
 import com.example.best.viaplayassignment.R;
 import com.example.best.viaplayassignment.model.ViaplaySection;
-import com.example.best.viaplayassignment.roomDb.MyAppDatabase;
-import com.example.best.viaplayassignment.roomDb.Sections;
-import com.example.best.viaplayassignment.volly.MySingleton;
 import com.example.best.viaplayassignment.volly.NavigateActivity;
-import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.MyViewHolder> {
@@ -68,7 +51,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.MyViewHo
 
                         Intent intent = new Intent(context, NavigateActivity.class);
                         intent.putExtra("webUrl", viaplaySectionArrayList.get(position).getHref());
-                        intent.putExtra("title", viaplaySectionArrayList.get(position).getTitle());
+                        intent.putExtra("title1", viaplaySectionArrayList.get(position).getTitle());
                         intent.putExtra("name", viaplaySectionArrayList.get(position).getName());
                         intent.putExtra("position", position+"");
 

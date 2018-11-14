@@ -21,7 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".volly.NavigateActivity"></activity>
+        <activity
+            android:name=".volly.NavigateActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>

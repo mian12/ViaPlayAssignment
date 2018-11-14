@@ -24,12 +24,37 @@ public class Sections {
     @ColumnInfo(name = "sec_name")
     private String SectionName;
 
-
     @ColumnInfo(name = "sec_href")
     private String SectionHref;
 
-    @ColumnInfo(name ="sec_offline")
+
+    @ColumnInfo(name = "sec_title")
+    private String SectionTitle;
+
+    @ColumnInfo(name = "sec_offline")
     private String SectionHrefOffline;
+
+    @ColumnInfo(name = "title")
+    private String Title;
+
+    @ColumnInfo(name = "description")
+    private String Description;
+
+    public String getTitle() {
+        return Title;
+    }
+
+    public void setTitle(String title) {
+        Title = title;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String description) {
+        Description = description;
+    }
 
     public String getSectionHrefOffline() {
         return SectionHrefOffline;
@@ -46,9 +71,6 @@ public class Sections {
     public void setSectionTitle(String sectionTitle) {
         SectionTitle = sectionTitle;
     }
-
-    @ColumnInfo(name = "sec_title")
-    private String SectionTitle;
 
 
     public String getSectionId() {
