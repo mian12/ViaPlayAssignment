@@ -23,23 +23,23 @@ public class Common {
     }
 
 
-//    public static Boolean isConnectedToInternet(Context context) {
-//        // checking inernet connection available or not
-//        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//        if (connectivityManager != null) {
-//            NetworkInfo[] info = connectivityManager.getAllNetworkInfo();
-//            if (info != null) {
-//                for (int i = 0; i < info.length; i++) {
-//                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//
-//
-//        return false;
-//    }
+    public static Boolean isConnectedToInternet(Context context) {
+        // checking inernet connection available or not
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo[] info = connectivityManager.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+
+        return false;
+    }
 
 
 }

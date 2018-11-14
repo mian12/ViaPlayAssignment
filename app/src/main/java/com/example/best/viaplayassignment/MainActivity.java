@@ -1,5 +1,6 @@
 package com.example.best.viaplayassignment;
 
+import android.arch.persistence.room.Room;
 import android.os.StrictMode;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import com.example.best.viaplayassignment.adapter.SectionAdapter;
 import com.example.best.viaplayassignment.model.ViaPlayResponse;
 import com.example.best.viaplayassignment.model.ViaplaySection;
 import com.example.best.viaplayassignment.remote.IViaPlayApi;
+import com.example.best.viaplayassignment.roomDb.MyAppDatabase;
+import com.example.best.viaplayassignment.roomDb.Sections;
 import com.example.best.viaplayassignment.volly.MySingleton;
 
 import org.json.JSONArray;
@@ -40,7 +43,10 @@ public class MainActivity extends AppCompatActivity {
     public SwipeRefreshLayout swipeRefreshLayout;
 
 
-    ArrayList<ViaplaySection> viaplaySectionArrayList = new ArrayList<>();
+    List<ViaplaySection> viaplaySectionArrayList = null;
+
+    public static MyAppDatabase myAppDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +70,52 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
 
-     //   iViaPlayApi = Common.getSections();
 
-        sendRequest();
+        //init room database
+        myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, "ViaPlay").allowMainThreadQueries().build();
+
+
+        //   iViaPlayApi = Common.getSections();
+
+
+        if (Common.isConnectedToInternet(MainActivity.this)) {
+
+            viaplaySectionArrayList = new ArrayList<>();
+
+            sendRequest();
+
+        } else {
+
+
+            Toast.makeText(this, "Offline Mode", Toast.LENGTH_SHORT).show();
+            try {
+
+
+                List<Sections> offLinelist = myAppDatabase.myDao().getSections();
+
+
+                viaplaySectionArrayList = new ArrayList<>();
+
+                for (int i = 0; i < offLinelist.size(); i++) {
+                    ViaplaySection viaplaySection = new ViaplaySection();
+
+                    viaplaySection.setId(offLinelist.get(i).getSectionId());
+                    viaplaySection.setTitle(offLinelist.get(i).getSectionTitle());
+                    viaplaySection.setHref(offLinelist.get(i).getSectionHref());
+                    viaplaySection.setName(offLinelist.get(i).getSectionName());
+
+                    viaplaySectionArrayList.add(viaplaySection);
+
+                }
+
+                SectionAdapter adapter = new SectionAdapter(this, viaplaySectionArrayList);
+                recyclerView.setAdapter(adapter);
+
+
+            } catch (Exception e) {
+                e.getMessage();
+            }
+        }
 
     }
 
@@ -98,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
 
                                 ViaplaySection viaplaySection = new ViaplaySection();
 
-                                String string=innerJson.getString("href");
-                                String[] href=string.split("\\{");
+                                String string = innerJson.getString("href");
+                                String[] href = string.split("\\{");
 
 
                                 viaplaySection.setId(innerJson.getString("id"));
@@ -117,6 +166,21 @@ public class MainActivity extends AppCompatActivity {
 
                             SectionAdapter adapter = new SectionAdapter(MainActivity.this, viaplaySectionArrayList);
                             recyclerView.setAdapter(adapter);
+
+                            myAppDatabase.myDao().clearSections();
+
+                            for (int i = 0; i < viaplaySectionArrayList.size(); i++) {
+                                Sections sections = new Sections();
+
+                                sections.setSectionId(viaplaySectionArrayList.get(i).getId());
+                                sections.setSectionTitle(viaplaySectionArrayList.get(i).getTitle());
+                                sections.setSectionName(viaplaySectionArrayList.get(i).getName());
+                                sections.setSectionHref(viaplaySectionArrayList.get(i).getHref());
+
+                                sendRequestHref(sections, viaplaySectionArrayList.get(i).getHref());
+
+
+                            }
 
 
                         } catch (JSONException e) {
@@ -143,6 +207,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void sendRequestHref(final Sections sections, String url) {
+
+
+        StringRequest postRequest = new StringRequest(Request.Method.GET, url,
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+
+                        sections.setSectionHrefOffline(response);
+
+                        myAppDatabase.myDao().addToSections(sections);
+
+
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                dialog.dismiss();
+
+                Log.e("error", error.getMessage() + "");
+                Toast.makeText(MainActivity.this,
+                        "something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        MySingleton.getInstance().addToReqQueue(postRequest);
+
+    }
+
     public void retroRequest() {
         iViaPlayApi.getViaPlayResponse().enqueue(new Callback<ViaPlayResponse>() {
             @Override
@@ -163,4 +258,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
 }

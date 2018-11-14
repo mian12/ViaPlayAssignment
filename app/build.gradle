@@ -35,4 +35,8 @@ dependencies {
     implementation 'com.mcxiaoke.volley:library:1.0.6'
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    // room
+    implementation "android.arch.persistence.room:runtime:1.0.0"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+
 }
