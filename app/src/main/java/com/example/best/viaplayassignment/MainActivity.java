@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         //init room database
-        myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, "ViaPlay").allowMainThreadQueries().build();
+        myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, "ViaPlay")
+                .allowMainThreadQueries().build();
 
 
         //   iViaPlayApi = Common.getSections();
